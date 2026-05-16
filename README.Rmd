@@ -1,7 +1,6 @@
 ---
 output: github_document
 ---
-
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ```{r, include = FALSE}
@@ -13,33 +12,144 @@ knitr::opts_chunk$set(
 )
 ```
 
-
 # sporthelp
 
-The sporthelp package aims to help users in doing calculations based around fitness. 
-It provides functions to do common calculations without having to write them out in scripts.
+The sporthelp package aims to help users in doing calculations based around
+fitness. It provides functions to do common calculations without having to
+write them out in scripts.
 
 ## Installation
 
-You can install the development version of sporthelp from [GitHub](https://github.com/) with:
-      
-``` r
+You can install the development version of sporthelp from
+[GitHub](https://github.com/) with:
+
+```{r, eval = FALSE}
 # install.packages("devtools")
 devtools::install_github("stevenballin/sporthelp")
 ```
 
-## Usage
+## Functions
 
-When doing calculations based around fitness you may want to do calculations surrounding BMI, daily calories or step goals. Rather than typing these calculations out as below (error prone) the alternative solution is to use the functions supplied in this package.
-```{r}
-weight_kg <- 80
-height_cm <- 180
-weight_kg/(height_cm/100)^2
+```{r, echo = FALSE}
+knitr::kable(data.frame(
+  Function = c(
+    "`calculate_bmi()`",
+    "`calculate_bmi_prime()`",
+    "`calculate_ponderal_index()`",
+    "`daily_calories()`"
+  ),
+  Description = c(
+    "Calculate Body Mass Index (BMI)",
+    "Calculate BMI Prime relative to a continental or custom upper limit",
+    "Calculate Ponderal Index (PI)",
+    "Calculate recommended daily calorie intake"
+  )
+))
 ```
 
-Now below one of the base functions of sporthelp is shown:
+## Usage
 
 ```{r}
 library(sporthelp)
-calculate_bmi(weight=80, height=180)
+```
+
+### BMI
+
+Body Mass Index is calculated from weight and height. Rather than writing the
+formula manually (error prone), use `calculate_bmi()`:
+
+```{r}
+# Manual approach
+weight_kg <- 80
+height_cm <- 180
+weight_kg / (height_cm / 100)^2
+
+# Using sporthelp
+calculate_bmi(weight = 80, height = 180)
+```
+
+Height and weight units can be specified explicitly:
+
+```{r}
+calculate_bmi(weight = 176, height = 71, weight_unit = "lbs", height_unit = "in")
+```
+
+---
+
+### BMI Prime
+
+BMI Prime expresses BMI as a ratio relative to the upper limit for a given
+region, where a value of 1.0 means BMI is exactly at the upper limit.
+It can be calculated from a known BMI or directly from height and weight:
+
+```{r}
+# From a known BMI
+calculate_bmi_prime(bmi = 25, continent = "Europe")
+
+# From height and weight
+calculate_bmi_prime(weight = 80, height = 180, continent = "Asia")
+
+# With a custom upper limit
+calculate_bmi_prime(bmi = 25, upper_limit = 25)
+```
+
+Supported continents:
+
+```{r, echo = FALSE}
+knitr::kable(data.frame(
+  Continent = c("Asia", "Europe", "North_America", "South_America", "Africa", "Oceania"),
+  `Upper Limit` = c(22.9, 24.9, 24.9, 24.9, 24.9, 25.0),
+  check.names = FALSE
+))
+```
+
+---
+
+### Ponderal Index
+
+The Ponderal Index is similar to BMI but cubes height instead of squaring it,
+making it more reliable for very tall or short individuals:
+
+```{r}
+# Default units (kg, cm)
+calculate_ponderal_index(weight = 80, height = 180)
+
+# Imperial units
+calculate_ponderal_index(weight = 160, height = 70, weight_unit = "lbs", height_unit = "in")
+```
+
+---
+
+### Daily Calories
+
+Calculates recommended daily calorie intake based on weight, height, age,
+gender and activity level. Three BMR formulas are supported:
+
+- `"MSJ"` — Mifflin-St Jeor (default)
+- `"RHB"` — Revised Harris-Benedict
+- `"KMA"` — Katch-McArdle (requires body fat percentage as a decimal e.g. `0.20` for 20%)
+
+```{r}
+# Default formula (MSJ) with Light activity
+daily_calories(weight = 80, height = 180, age = 30, gender = "male")
+
+# Specifying activity level
+daily_calories(weight = 60, height = 165, age = 25, gender = "female", activity = "Active")
+
+# Using the Katch-McArdle formula
+daily_calories(weight = 80, height = 180, age = 30, gender = "male",
+               bodyfat = 0.20, formula = "KMA")
+
+# Imperial units
+daily_calories(weight = 176, height = 71, age = 30, gender = "male",
+               weight_unit = "lbs", height_unit = "in")
+```
+
+Supported activity levels:
+
+```{r, echo = FALSE}
+knitr::kable(data.frame(
+  Level = c("BMR", "Sedentary", "Light", "Moderate", "Active", "Very Active", "Extra Active"),
+  Factor = c(1.000, 1.200, 1.375, 1.465, 1.550, 1.725, 1.900)
+))
 ```

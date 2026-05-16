@@ -2,3 +2,5 @@
 
 export(calculate_bmi)
 export(calculate_bmi_prime)
+export(calculate_ponderal_index)
+export(daily_calories)

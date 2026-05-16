@@ -2,35 +2,41 @@
 % Please edit documentation in R/calculate_bmi_prime.R
 \name{calculate_bmi_prime}
 \alias{calculate_bmi_prime}
-\title{Calculates BMI prime}
+\title{Calculates BMI Prime}
 \usage{
 calculate_bmi_prime(
-  height = NULL,
   weight = NULL,
+  height = NULL,
+  weight_unit = "kg",
+  height_unit = "cm",
   bmi = NULL,
   continent = NULL,
   upper_limit = NULL
 )
 }
 \arguments{
-\item{height}{Height in meters.}
+\item{weight}{Weight of person}
 
-\item{weight}{Weight in kilograms.}
+\item{height}{Height of person}
 
-\item{bmi}{Measured bmi as an alternative to supplying weight and height.}
+\item{weight_unit}{The unit of weight parameter. Must be either 'kg' or 'lbs'.}
 
-\item{continent}{Continent that is to be used for normalisation.}
+\item{height_unit}{The unit of the height parameter. Must be any of: 'cm', 'm', 'in' or 'ft'.}
 
-\item{upper_limit}{Alternative upper limit for specific country or state.}
+\item{bmi}{BMI value. If provided, height and weight are not required.}
+
+\item{continent}{Continent of person. Must be one of: 'Asia', 'Europe', 'North_America', 'South_America', 'Africa', 'Oceania'.}
+
+\item{upper_limit}{Upper limit of BMI for the person's region. If provided, continent is not required.}
 }
 \value{
 A numerical value
 }
 \description{
-Calculates BMI prime
+Calculates BMI Prime
 }
 \examples{
-calculate_bmi_prime(height=1.80, weight=80, continent="Africa")
-calculate_bmi_prime(bmi=22.9, continent="North_America")
-calculate_bmi_prime(bmi=22.9, upper_limit=24.9)
+calculate_bmi_prime(bmi = 25, continent = "Europe")
+calculate_bmi_prime(weight = 80, height = 180, continent = "Asia")
+calculate_bmi_prime(bmi = 25, upper_limit = 25)
 }
