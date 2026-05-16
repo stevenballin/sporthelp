@@ -21,7 +21,7 @@ It provides functions to do common calculations without having to write them out
 
 ## Installation
 
-You can install the development version of regexcite from [GitHub](https://github.com/) with:
+You can install the development version of sporthelp from [GitHub](https://github.com/) with:
       
 ``` r
 # install.packages("devtools")

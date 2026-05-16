@@ -9,7 +9,7 @@ having to write them out in scripts.
 
 ## Installation
 
-You can install the development version of regexcite from
+You can install the development version of sporthelp from
 [GitHub](https://github.com/) with:
 
 ``` r
