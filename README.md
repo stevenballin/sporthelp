@@ -1,0 +1,40 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# sporthelp
+
+The sporthelp package aims to help users in doing calculations based
+around fitness. It provides functions to do common calculations without
+having to write them out in scripts.
+
+## Installation
+
+You can install the development version of regexcite from
+[GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("stevenballin/sporthelp")
+```
+
+## Usage
+
+When doing calculations based around fitness you may want to do
+calculations surrounding BMI, daily calories or step goals. Rather than
+typing these calculations out as below (error prone) the alternative
+solution is to use the functions supplied in this package.
+
+``` r
+weight_kg <- 80
+height_cm <- 180
+weight_kg/(height_cm/100)^2
+#> [1] 24.69136
+```
+
+Now below one of the base functions of sporthelp is shown:
+
+``` r
+library(sporthelp)
+calculate_bmi(weight=80, height=180)
+#> [1] 24.69136
+```

@@ -1,0 +1,16 @@
+Package: sporthelp
+Title: What the Package Does (One Line, Title Case)
+Version: 0.0.0.9000
+Authors@R: 
+    person("Steven", "ballin", , "steven.ballin@dontdox.com", role = c("aut", "cre"))
+Description: This package provides functions that help with tasks related to fitness, such as calculating BMI(prime),
+  step goals and calorie intake.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 8.0.0
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Imports: 
+    dplyr

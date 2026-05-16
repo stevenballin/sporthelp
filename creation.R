@@ -1,0 +1,12 @@
+library(devtools)
+library(tidyverse)
+create_package("C:/Users/benda/OneDrive/Documenten/HU/jaar3/DSFB2/sporthelp")
+use_r("calculate_bmi")
+use_r("calculate_bmi_prime")
+use_r("calculate_pi")
+use_r("daily_calories")
+use_r("step_goal_progress")
+use_r("plot_weight_progress")
+load_all()
+
+usethis::use_package("dplyr")
