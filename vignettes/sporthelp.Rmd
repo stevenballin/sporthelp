@@ -1,0 +1,182 @@
+---
+title: "Getting Started with sporthelp"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with sporthelp}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(sporthelp)
+```
+
+## Introduction
+
+The sporthelp package provides functions for common fitness calculations.
+Rather than writing error-prone formulas by hand, sporthelp handles unit
+conversions, input validation, and the underlying maths for you.
+
+This vignette walks through each function with realistic examples, and shows
+how functions can be combined to build a fuller picture of a person's fitness
+metrics.
+
+---
+
+## BMI
+
+Body Mass Index is the most widely used measure of leanness or corpulence.
+It is calculated as weight in kilograms divided by height in metres squared.
+
+```{r}
+# A 30 year old male, 80kg, 180cm
+calculate_bmi(weight = 80, height = 180)
+```
+
+Units can be specified if your data is not in metric:
+
+```{r}
+# Same person in imperial units
+calculate_bmi(weight = 176, height = 71, weight_unit = "lbs", height_unit = "in")
+```
+
+### Limitations of BMI
+
+BMI is a useful population-level measure but has well-documented limitations
+for individuals — particularly those who are very tall, very short, or have
+high muscle mass. The Ponderal Index and BMI Prime (covered below) address
+some of these limitations.
+
+---
+
+## BMI Prime
+
+BMI Prime expresses BMI as a ratio of a person's BMI to the upper limit
+recommended for their region. A value of exactly 1.0 means the person is
+right at their regional upper limit; below 1.0 is under, above 1.0 is over.
+
+```{r}
+# From a known BMI
+calculate_bmi_prime(bmi = 25, continent = "Europe")
+
+# Directly from height and weight
+calculate_bmi_prime(weight = 80, height = 180, continent = "Asia")
+```
+
+If your use case requires a custom upper limit rather than a continental one,
+you can supply it directly:
+
+```{r}
+calculate_bmi_prime(bmi = 25, upper_limit = 24.9)
+```
+
+### Continental upper limits
+
+Different regions use different BMI upper limits due to population-level
+differences in body composition:
+
+```{r, echo = FALSE}
+knitr::kable(data.frame(
+  Continent    = c("Asia", "Europe", "North_America", "South_America", "Africa", "Oceania"),
+  `Upper Limit` = c(22.9, 24.9, 24.9, 24.9, 24.9, 25.0),
+  check.names  = FALSE
+))
+```
+
+---
+
+## Ponderal Index
+
+The Ponderal Index (PI) is similar to BMI but cubes height rather than
+squaring it. This makes it more reliable for individuals at the extremes
+of the height spectrum, where BMI tends to over- or underestimate body fat.
+
+```{r}
+# Default metric units
+calculate_ponderal_index(weight = 80, height = 180)
+
+# Imperial units
+calculate_ponderal_index(weight = 160, height = 70,
+                         weight_unit = "lbs", height_unit = "in")
+```
+
+---
+
+## Daily Calories
+
+`daily_calories()` estimates recommended daily calorie intake based on
+Basal Metabolic Rate (BMR) scaled by an activity factor. Three BMR
+formulas are available:
+
+- **MSJ** (Mifflin-St Jeor) — the default, recommended for most people
+- **RHB** (Revised Harris-Benedict) — an older but widely used formula
+- **KMA** (Katch-McArdle) — accounts for body fat, useful for athletic individuals
+
+```{r}
+# Default settings: MSJ formula, Light activity
+daily_calories(weight = 80, height = 180, age = 30, gender = "male")
+
+# More active lifestyle
+daily_calories(weight = 80, height = 180, age = 30, gender = "male",
+               activity = "Very Active")
+
+# Female example
+daily_calories(weight = 60, height = 165, age = 25, gender = "female",
+               activity = "Moderate")
+
+# Using Katch-McArdle for an athletic individual
+daily_calories(weight = 80, height = 180, age = 30, gender = "male",
+               bodyfat = 0.12, formula = "KMA", activity = "Active")
+```
+
+### Activity levels
+
+```{r, echo = FALSE}
+knitr::kable(data.frame(
+  Level   = c("BMR", "Sedentary", "Light", "Moderate", "Active", "Very Active", "Extra Active"),
+  Factor  = c(1.000, 1.200, 1.375, 1.465, 1.550, 1.725, 1.900),
+  Example = c(
+    "Completely at rest",
+    "Desk job, little or no exercise",
+    "Light exercise 1-3 days per week",
+    "Moderate exercise 4-5 days per week",
+    "Daily exercise or intense exercise 3-4 times per week",
+    "Intense exercise 6-7 times per week",
+    "Very intense daily training or physical job"
+  )
+))
+```
+
+---
+
+## Combining functions
+
+Since all functions use the same unit arguments, they can be combined
+naturally. Here is an example building a full picture for one individual:
+
+```{r}
+weight <- 80
+height <- 180
+age    <- 30
+gender <- "male"
+
+bmi      <- calculate_bmi(weight = weight, height = height)
+bmi_p    <- calculate_bmi_prime(weight = weight, height = height, continent = "Europe")
+pi       <- calculate_ponderal_index(weight = weight, height = height)
+calories <- daily_calories(weight = weight, height = height,
+                           age = age, gender = gender, activity = "Moderate")
+
+cat(
+  "BMI:             ", round(bmi, 2),      "\n",
+  "BMI Prime:       ", round(bmi_p, 2),    "\n",
+  "Ponderal Index:  ", round(pi, 2),       "\n",
+  "Daily Calories:  ", round(calories),    "\n"
+)
+```

@@ -3,3 +3,6 @@
 .RData
 .Ruserdata
 creation.R
+inst/doc
+/doc/
+/Meta/
